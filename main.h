@@ -3,7 +3,10 @@
 
 #include <stdio.h>
 #include <unistd.h>
+#include <string.h>
+#include <stdlib.h>
 
+#define STACK_SIZE 100
 
 /**
  * struct stack_s - doubly linked list representation of a stack (or queue)
@@ -16,9 +19,9 @@
  */
 typedef struct stack_s
 {
-        int n;
-        struct stack_s *prev;
-        struct stack_s *next;
+	int n;
+	struct stack_s *prev;
+	struct stack_s *next;
 } stack_t;
 
 /**
@@ -31,8 +34,23 @@ typedef struct stack_s
  */
 typedef struct instruction_s
 {
-        char *opcode;
-        void (*f)(stack_t **stack, unsigned int line_number);
+	char *opcode;
+	void (*f)(stack_t **stack, unsigned int line_number);
 } instruction_t;
+
+/**
+ * struct Stack - A structure representing a stack
+ * @stack: An array to store the stack elements
+ * @top: The index of the top element in the stack
+ */
+typedef struct Stack
+{
+	int stack[STACK_SIZE];
+	int top;
+} Stack;
+
+void push(int value, int line_number);
+void pall(void);
+
 
 #endif
