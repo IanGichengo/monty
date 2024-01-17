@@ -38,19 +38,6 @@ typedef struct instruction_s
 	void (*f)(stack_t **stack, unsigned int line_number);
 } instruction_t;
 
-/**
- * struct Stack - A structure representing a stack
- * @stack: An array to store the stack elements
- * @top: The index of the top element in the stack
- */
-typedef struct Stack
-{
-	int stack[STACK_SIZE];
-	int top;
-} Stack;
-
-void push(int value, int line_number);
-void pall(void);
 
 
 #endif
