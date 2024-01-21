@@ -1,117 +1,57 @@
 #include "main.h"
 
 /**
- * push - Pushes an element onto the stack.
- * @stack: A pointer to the top of the stack.
- * @line_number: The line number in the file.
+ * push - Adds a new element to the stack
+ * @stack: Pointer to the stack
+ * @n: Integer to be added to the stack
  */
-
-void push(stack_t **stack, unsigned int line_number)
+void push(stack_t **stack, int n)
 {
-	char *n_str = strtok(NULL, " \n");
-	int n;
-	stack_t *new_node = malloc(sizeof(stack_t));
+    stack_t *new;
 
-	if (!n_str || !is_numeric(n_str))
-	{
-		fprintf(stderr, "L%d: usage: push integer\n", line_number);
-		exit(EXIT_FAILURE);
-	}
+    new = malloc(sizeof(stack_t));
+    if (new == NULL)
+    {
+        fprintf(stderr, "Error: malloc failed\n");
+        exit(EXIT_FAILURE);
+    }
 
-	n = atoi(n_str);
-
-	if (!new_node)
-	{
-		fprintf(stderr, "Error: malloc failed\n");
-		exit(EXIT_FAILURE);
-	}
-
-	new_node->n = n;
-	new_node->next = *stack;
-	new_node->prev = NULL;
-
-	if (*stack)
-		(*stack)->prev = new_node;
-
-	*stack = new_node;
+    new->n = n;
+    new->next = *stack;
+    *stack = new;
 }
 
 /**
- * pall - Prints all the values on the stack.
- * @stack: A pointer to the top of the stack.
- * @line_number: The line number in the file.
+ * pall - Prints all elements of the stack
+ * @stack: Pointer to the stack
  */
-
-void pall(stack_t **stack, unsigned int line_number)
+void pall(stack_t *stack)
 {
-	stack_t *temp = *stack;
-
-	(void)line_number;
-
-	while (temp)
-	{
-		printf("%d\n", temp->n);
-		temp = temp->next;
-	}
+    while (stack)
+    {
+        printf("%d\n", stack->n);
+        stack = stack->next;
+    }
 }
 
 /**
- * is_numeric - Checks if a string is a numeric value.
- * @str: The string to check.
- * Return: 1 if numeric, 0 otherwise.
+ * main - Entry point of the program
+ * @argc: Number of command-line arguments
+ * @argv: Array of command-line argument strings
+ * Return: EXIT_SUCCESS on success, EXIT_FAILURE on failure
  */
-
-int is_numeric(char *str)
-{
-	if (!str || *str == '\0')
-		return (0);
-
-	for (; *str; str++)
-	{
-		if (*str < '0' || *str > '9')
-			return (0);
-	}
-
-	return (1);
-}
-
 int main(int argc, char *argv[])
 {
-	unsigned int line_number = 0;
-	stack_t *stack = NULL;
-	FILE *file = fopen(argv[1], "r");
-	char *line = NULL;
-	char *opcode = strtok(line, " \n");
-	size_t len = 0;
-	ssize_t read;
-	(void)argc;
+    stack_t *stack = NULL;
+    int i;
 
-	if (!file)
-	{
-		fprintf(stderr, "Error: Can't open file %s\n", argv[1]);
-		exit(EXIT_FAILURE);
-	}
+    for (i = 1; i < argc; i++)
+    {
+        push(&stack, atoi(argv[i]));
+    }
 
-	while ((read = getline(&line, &len, file)) != -1)
-	{
-		line_number++;
+    pall(stack);
 
-		if (opcode)
-		{
-			if (strcmp(opcode, "push") == 0)
-				push(&stack, line_number);
-			else if (strcmp(opcode, "pall") == 0)
-				pall(&stack, line_number);
-		}
-	}
-	fclose(file);
-	free(line);
-	while (stack)
-	{
-		stack_t *temp = stack;
-
-		stack = stack->next;
-		free(temp);
-	}
-	return (0);
+    return (EXIT_SUCCESS);
 }
+
